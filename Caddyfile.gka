@@ -1,0 +1,10 @@
+
+# --- GKA demo (added by /opt/gka/setup.sh) ---
+gka-demo.taufikandrian.my.id {
+	encode zstd gzip
+	header X-Robots-Tag "noindex, nofollow"
+	reverse_proxy gka-wordpress:80 {
+		header_up X-Forwarded-Proto https
+	}
+}
+# --- end GKA demo ---

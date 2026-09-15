@@ -1,0 +1,84 @@
+# PT Gemilang Karya Agri – WordPress demo stack
+# Lives in /opt/gka. Caddy (n8n-caddy-1) terminates SSL and proxies to gka-wordpress:80.
+name: gka
+
+services:
+  db:
+    image: mariadb:11.4
+    container_name: gka-db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: gka
+      MARIADB_USER: gka
+      MARIADB_PASSWORD: ${DB_PASSWORD:?run setup.sh first}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?run setup.sh first}
+    command: ["--innodb-buffer-pool-size=128M", "--max-connections=40", "--performance-schema=OFF"]
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    mem_limit: 384m
+    logging: &logging
+      driver: json-file
+      options: { max-size: "20m", max-file: "3" }
+    networks: [internal]
+
+  wordpress:
+    image: wordpress:6.8-php8.3-apache
+    container_name: gka-wordpress
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: gka
+      WORDPRESS_DB_USER: gka
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_HOME', 'https://${DOMAIN}' );
+        define( 'WP_SITEURL', 'https://${DOMAIN}' );
+        if ( ( $$_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '' ) === 'https' ) { $$_SERVER['HTTPS'] = 'on'; }
+        define( 'FORCE_SSL_ADMIN', true );
+        define( 'DISALLOW_FILE_EDIT', true );
+        define( 'WP_POST_REVISIONS', 10 );
+        define( 'GKA_NOINDEX', true );
+    volumes:
+      - html:/var/www/html
+      - ./wp-content/themes/gka:/var/www/html/wp-content/themes/gka:ro
+      - ./wp-content/plugins/gka-core:/var/www/html/wp-content/plugins/gka-core:ro
+      - ./bin:/opt/gka-bin:ro
+    mem_limit: 512m
+    logging: *logging
+    networks: [internal, proxy]
+
+  cli:
+    image: wordpress:cli-php8.3
+    profiles: ["cli"]
+    user: "33:33"
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: gka
+      WORDPRESS_DB_USER: gka
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      HOME: /tmp
+    volumes:
+      - html:/var/www/html
+      - ./wp-content/themes/gka:/var/www/html/wp-content/themes/gka:ro
+      - ./wp-content/plugins/gka-core:/var/www/html/wp-content/plugins/gka-core:ro
+      - ./bin:/opt/gka-bin:ro
+    networks: [internal]
+
+volumes:
+  db:
+  html:
+
+networks:
+  internal: {}
+  proxy:
+    external: true
+    name: n8n_default
