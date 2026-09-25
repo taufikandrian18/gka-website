@@ -20,6 +20,7 @@ function gka_asset_ver( string $rel ): string {
 add_action( 'wp_enqueue_scripts', function (): void {
 	wp_enqueue_style( 'gka-blocks', get_theme_file_uri( 'assets/css/blocks.css' ), [], gka_asset_ver( 'assets/css/blocks.css' ) );
 	wp_enqueue_script( 'gka-view', get_theme_file_uri( 'assets/js/view.js' ), [], gka_asset_ver( 'assets/js/view.js' ), [ 'strategy' => 'defer', 'in_footer' => true ] );
+	wp_add_inline_script( 'gka-view', 'window.GKA=' . wp_json_encode( [ 'home' => gka_base_path() . '/', 'theme' => trailingslashit( get_theme_file_uri() ) ] ) . ';', 'before' );
 	// Motion layer: GSAP 3 + ScrollTrigger (standard no-charge licence) and Lenis smooth scroll, vendored.
 	$defer = [ 'strategy' => 'defer', 'in_footer' => true ];
 	wp_enqueue_script( 'gka-gsap', get_theme_file_uri( 'assets/vendor/gsap.min.js' ), [], '3.15.0', $defer );
@@ -43,7 +44,7 @@ add_action( 'wp_body_open', function (): void {
 	if ( ! is_front_page() ) {
 		return;
 	}
-	printf( '<div class="gka-loader" aria-hidden="true"><div class="gka-loader-in"><img src="%s" alt="" width="84" height="54"><b>000</b></div></div>', esc_url( get_theme_file_uri( 'assets/brand/gka-mark-light.svg' ) ) );
+	printf( '<div class="gka-loader" aria-hidden="true"><div class="gka-loader-in"><img src="%s" alt="" width="84" height="54"><b>000</b></div></div>', esc_url( get_theme_file_uri( 'assets/brand/gka-mark.svg' ) ) );
 } );
 
 add_action( 'wp_head', function (): void {
@@ -56,6 +57,37 @@ add_action( 'init', function (): void {
 	register_block_style( 'core/list', [ 'name' => 'plain', 'label' => __( 'Tanpa bullet', 'gka' ) ] );
 	register_block_style( 'core/list', [ 'name' => 'checks', 'label' => __( 'Centang', 'gka' ) ] );
 	register_block_style( 'core/button', [ 'name' => 'arrow', 'label' => __( 'Dengan panah', 'gka' ) ] );
+} );
+
+/**
+ * Path WordPress is served under: '' at a domain root, '/gka' at website.taufikandrian.my.id/gka/.
+ */
+function gka_base_path(): string {
+	return rtrim( (string) wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
+}
+
+/**
+ * Templates, patterns, menus and seeded content link with root-relative paths ("/karir/",
+ * "/wp-content/themes/..."). When the site lives in a subdirectory, prefix them at render time so
+ * the same markup works at a domain root and under /gka/. Links that already carry the base path,
+ * protocol-relative URLs ("//cdn") and absolute URLs are left alone.
+ */
+add_filter( 'render_block', function ( string $html ): string {
+	$base = gka_base_path();
+	if ( '' === $base || ! str_contains( $html, '="/' ) ) {
+		return $html;
+	}
+	return (string) preg_replace_callback(
+		'#\b(href|src|action)=(["\'])(/(?!/)[^"\']*)#',
+		static function ( array $m ) use ( $base ): string {
+			$path = $m[3];
+			if ( $path === $base || str_starts_with( $path, $base . '/' ) || str_starts_with( $path, $base . '?' ) ) {
+				return $m[0];
+			}
+			return $m[1] . '=' . $m[2] . $base . $path;
+		},
+		$html
+	);
 } );
 
 /** Indonesian labels for the core mobile menu buttons (site has no translation packs installed). */

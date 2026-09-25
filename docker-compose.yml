@@ -38,8 +38,8 @@ services:
       WORDPRESS_DB_USER: gka
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
       WORDPRESS_CONFIG_EXTRA: |
-        define( 'WP_HOME', 'https://${DOMAIN}' );
-        define( 'WP_SITEURL', 'https://${DOMAIN}' );
+        define( 'WP_HOME', 'https://${DOMAIN}${BASE_PATH:-}' );
+        define( 'WP_SITEURL', 'https://${DOMAIN}${BASE_PATH:-}' );
         if ( ( $$_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '' ) === 'https' ) { $$_SERVER['HTTPS'] = 'on'; }
         define( 'FORCE_SSL_ADMIN', true );
         define( 'DISALLOW_FILE_EDIT', true );
@@ -50,6 +50,7 @@ services:
       - ./wp-content/themes/gka:/var/www/html/wp-content/themes/gka:ro
       - ./wp-content/plugins/gka-core:/var/www/html/wp-content/plugins/gka-core:ro
       - ./bin:/opt/gka-bin:ro
+      - ./docker/apache-gka.conf:/etc/apache2/conf-enabled/gka-subdir.conf:ro
     mem_limit: 512m
     logging: *logging
     networks: [internal, proxy]

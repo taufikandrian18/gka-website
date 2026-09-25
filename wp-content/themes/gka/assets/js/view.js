@@ -1,9 +1,12 @@
 (() => {
+  // Site base path ("/" at a domain root, "/gka/" in a subdirectory) and theme URL, printed by functions.php.
+  const cfg = window.GKA || { home: '/', theme: '/wp-content/themes/gka/' };
   const norm = (p) => (p.replace(/\/+$/, '') || '') + '/';
+  const home = norm(cfg.home);
   const here = norm(location.pathname);
   const isCurrent = (href) => {
     const p = norm(new URL(href, location.origin).pathname);
-    return p === here || (p !== '/' && here.startsWith(p));
+    return p === here || (p !== home && here.startsWith(p));
   };
 
   // Desktop menu: mark current item and its parent.
@@ -42,12 +45,12 @@
     drawer.setAttribute('data-lenis-prevent', '');
     drawer.innerHTML = `
       <div class="gka-d-top">
-        <a class="gka-d-logo" href="/"><img src="/wp-content/themes/gka/assets/brand/gka-mark-light.svg" alt="" width="50" height="32"><span>Gemilang Karya Agri</span></a>
+        <a class="gka-d-logo" href="${home}"><img src="${cfg.theme}assets/brand/gka-mark.svg" alt="" width="50" height="32"><span>Gemilang Karya Agri</span></a>
         <button type="button" class="gka-d-close" aria-label="Tutup menu"><span></span><span></span></button>
       </div>
       <nav aria-label="Menu utama seluler"><ul class="gka-d-list">${items}</ul></nav>
       <div class="gka-d-foot">
-        <a class="gka-d-cta" href="/hubungi-kami/">Hubungi Kami <span aria-hidden="true">→</span></a>
+        <a class="gka-d-cta" href="${home}hubungi-kami/">Hubungi Kami <span aria-hidden="true">→</span></a>
         <div class="gka-d-contact"><a href="https://wa.me/6287771491004">WhatsApp</a><a href="tel:+622545753355">(0254) 575 3355</a></div>
       </div>`;
     document.body.appendChild(drawer);

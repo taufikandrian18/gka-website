@@ -14,6 +14,11 @@ add_action( 'template_redirect', function (): void {
 		return;
 	}
 	$path = trim( (string) wp_parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+	// Match relative to the site root, so /gka/tentang behaves like /tentang at a domain root.
+	$base = trim( (string) wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
+	if ( '' !== $base && str_starts_with( $path . '/', $base . '/' ) ) {
+		$path = ltrim( substr( $path, strlen( $base ) ), '/' );
+	}
 	$map  = gka_core_legacy_redirects();
 	if ( isset( $map[ $path ] ) ) {
 		wp_safe_redirect( home_url( $map[ $path ] ), 301 );

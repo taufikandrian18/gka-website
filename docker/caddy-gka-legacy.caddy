@@ -1,0 +1,6 @@
+# --- GKA legacy domain (added by /opt/gka/setup.sh) ---
+# The old demo address keeps working: every path moves to the /gka/ site.
+gka-demo.taufikandrian.my.id {
+	redir https://website.taufikandrian.my.id/gka{uri} 301
+}
+# --- end GKA legacy domain ---
