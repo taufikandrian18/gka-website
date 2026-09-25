@@ -6,7 +6,6 @@ cd "$(dirname "$0")"
 
 DOMAIN="website.taufikandrian.my.id"
 BASE_PATH="/gka"                              # WordPress lives at https://$DOMAIN$BASE_PATH/
-LEGACY_DOMAIN="gka-demo.taufikandrian.my.id"  # old address, redirected to the new one
 SITE_URL="https://$DOMAIN$BASE_PATH"
 CADDY="n8n-caddy-1"
 ADMIN_EMAIL="${ADMIN_EMAIL:-yanti@pt-gka.com}"
@@ -90,10 +89,11 @@ wp eval-file /opt/gka-bin/apply-photos.php || echo "(curated photos not applied)
 wp rewrite structure '/%postname%/' --hard
 wp rewrite flush --hard
 
-say "6/7 Caddy routes: $SITE_URL/ (+ redirect from $LEGACY_DOMAIN)"
+say "6/7 Caddy route: $SITE_URL/"
 src=$(docker inspect "$CADDY" --format '{{range .Mounts}}{{if eq .Destination "/etc/caddy/Caddyfile"}}{{.Source}}{{end}}{{end}}')
 [[ -n "$src" && -f "$src" ]] || die "Caddyfile is not a bind mount on the host; add Caddyfile.gka (or docker/caddy-gka-handle.caddy) manually."
-# Start from the current Caddyfile minus every block this script added before (old demo domain included).
+# Start from the current Caddyfile minus every block this script added before. That also retires the old
+# gka-demo.taufikandrian.my.id site and its redirect: the address is shut down, not forwarded.
 tmp=$(mktemp)
 awk '/^# --- GKA (demo|legacy domain|\(added)/ {skip=1} !skip {print} /^# --- end GKA( demo| legacy domain)? ---/ {skip=0}' "$src" > "$tmp"
 if grep -q "gka-wordpress" "$tmp"; then
@@ -106,7 +106,6 @@ elif grep -qE "(^|[[:space:],])$DOMAIN([[:space:],{:]|$)" "$tmp"; then
 else
   cat Caddyfile.gka >> "$tmp"
 fi
-cat docker/caddy-gka-legacy.caddy >> "$tmp"
 if cmp -s "$tmp" "$src"; then
   echo "routes already up to date"
 else
@@ -135,5 +134,4 @@ for p in / /tentang-kami/ /bisnis-kami/ /esg/ /karir/ /hubungi-kami/; do
 done
 docker ps --filter name=gka- --format 'table {{.Names}}\t{{.Status}}'
 echo
-printf '%-18s %s\n' "old domain" "$(curl -s -o /dev/null -w '%{http_code} -> %{redirect_url}' "https://$LEGACY_DOMAIN/karir/")"
 echo "Done. Site: $SITE_URL/   Admin: $SITE_URL/wp-admin/"

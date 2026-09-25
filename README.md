@@ -1,7 +1,7 @@
 # GKA demo deploy
 
 Target: `https://website.taufikandrian.my.id/gka/` (admin: `/gka/wp-admin/`) on the Ubuntu VPS, behind the existing `n8n-caddy-1`.
-The old `https://gka-demo.taufikandrian.my.id` redirects there (301, path kept).
+The old `https://gka-demo.taufikandrian.my.id` is retired: no Caddy site, no redirect, DNS record removed.
 
 How the subdirectory works: Caddy forwards `/gka/*` unchanged to `gka-wordpress`, Apache aliases `/gka`
 onto the WordPress root (`docker/apache-gka.conf`), and `WP_HOME` is `https://$DOMAIN$BASE_PATH` from `.env`.
@@ -36,7 +36,8 @@ cd /opt/gka && sudo bash setup.sh
 ```
 It updates `DOMAIN`/`BASE_PATH` in `.env` (passwords untouched), recreates WordPress, backs up the database to
 `/opt/gka/gka-before-move-*.sql`, rewrites stored URLs with `wp search-replace`, then shows the Caddyfile diff and
-asks before reloading Caddy. If `website.taufikandrian.my.id` already has its own block in the Caddyfile, the script
+asks before reloading Caddy. The same run removes the old `gka-demo.taufikandrian.my.id` block from the Caddyfile
+(any earlier redirect included); delete its DNS A record afterwards. If `website.taufikandrian.my.id` already has its own block in the Caddyfile, the script
 stops and prints `docker/caddy-gka-handle.caddy`: paste it inside that block (above any catch-all
 `handle`/`reverse_proxy`/`file_server`) and run `setup.sh` again.
 
