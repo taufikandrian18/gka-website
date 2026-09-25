@@ -39,6 +39,7 @@
     drawer.setAttribute('aria-modal', 'true');
     drawer.setAttribute('aria-label', 'Menu');
     drawer.hidden = true;
+    drawer.setAttribute('data-lenis-prevent', '');
     drawer.innerHTML = `
       <div class="gka-d-top">
         <a class="gka-d-logo" href="/"><img src="/wp-content/themes/gka/assets/brand/gka-mark-light.svg" alt="" width="50" height="32"><span>Gemilang Karya Agri</span></a>
@@ -57,12 +58,14 @@
       drawer.hidden = false;
       requestAnimationFrame(() => drawer.classList.add('is-open'));
       document.documentElement.classList.add('gka-lock');
+      window.gkaLenis?.stop();
       burgers.forEach((b) => b.setAttribute('aria-expanded', 'true'));
       drawer.querySelector('.gka-d-close').focus();
     };
     const close = () => {
       drawer.classList.remove('is-open');
       document.documentElement.classList.remove('gka-lock');
+      window.gkaLenis?.start();
       burgers.forEach((b) => b.setAttribute('aria-expanded', 'false'));
       setTimeout(() => { drawer.hidden = true; }, 220);
       lastFocus?.focus();
@@ -82,6 +85,7 @@
   // Scroll cue in the hero: jump to the first section below it.
   document.querySelectorAll('.gka-scroll-cue').forEach((b) => b.addEventListener('click', () => {
     const next = document.querySelector('.gka-hero')?.nextElementSibling || document.querySelector('main');
+    if (next && window.gkaLenis) { window.gkaLenis.scrollTo(next); return; }
     next?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }));
 
@@ -122,7 +126,7 @@
       h.classList.add('gka-split');
     };
 
-    const headings = document.querySelectorAll('.gka-hero h1, .gka-phead h1, main h2.wp-block-heading, .gka-apply h2, .gka-esg-card h2');
+    const headings = document.querySelectorAll('.gka-hero h1, .gka-phead h1, main h2.wp-block-heading, .gka-cta-title, .gka-apply h2, .gka-esg-card h2');
     headings.forEach(split);
 
     const show = (el) => el.classList.add('is-revealed');
@@ -130,7 +134,7 @@
       const hio = new IntersectionObserver((entries) => {
         entries.forEach((e) => { if (e.isIntersecting) { show(e.target); hio.unobserve(e.target); } });
       }, { rootMargin: '0px 0px -12% 0px', threshold: 0.15 });
-      headings.forEach((h) => (h.closest('.gka-hero') ? requestAnimationFrame(() => setTimeout(() => show(h), 250)) : hio.observe(h)));
+      headings.forEach((h) => (h.closest('.gka-hero') ? requestAnimationFrame(() => setTimeout(() => show(h), document.documentElement.classList.contains('gka-preload') ? 1500 : 250)) : hio.observe(h)));
       document.querySelectorAll('.gka-eyebrow').forEach((e) => hio.observe(e));
     } else {
       headings.forEach(show);
@@ -144,7 +148,7 @@
 
   // Scroll reveal (transform only: content is never hidden).
   if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
-  const targets = document.querySelectorAll('.gka-head, .gka-steps > li, .gka-prod li, .gka-jobs li, .gka-esg > a, .gka-timeline > li, .gka-pillars > div');
+  const targets = document.querySelectorAll('.gka-head, .gka-index li, .gka-prod li, .gka-jobs li, .gka-esg > a, .gka-timeline > li, .gka-pillars > div');
   document.documentElement.classList.add('gka-motion');
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });

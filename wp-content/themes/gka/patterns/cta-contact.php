@@ -1,22 +1,24 @@
 <?php
 /**
- * Title: Ajakan hubungi kami
+ * Title: Ajakan hubungi kami (tipografi besar)
  * Slug: gka/cta-contact
  * Categories: gka
  */
-$img = gka_photo( 'cta', 'lanskap-kandang.webp' );
+$words = [ 'Broiler', 'Close house', 'Kemitraan', 'Penimbangan terbuka', 'Serang, Banten' ];
 ?>
-<!-- wp:cover {"url":"<?php echo esc_url( $img ); ?>","dimRatio":0,"minHeight":440,"align":"full","className":"gka-cta","layout":{"type":"default"}} -->
-<div class="wp-block-cover alignfull gka-cta" style="min-height:440px"><img class="wp-block-cover__image-background" alt="" src="<?php echo esc_url( $img ); ?>" data-object-fit="cover" loading="lazy"/><span aria-hidden="true" class="wp-block-cover__background has-background-dim-0 has-background-dim"></span><div class="wp-block-cover__inner-container">
-<!-- wp:group {"className":"gka-cta-box","layout":{"type":"default"}} -->
-<div class="wp-block-group gka-cta-box">
-<!-- wp:paragraph {"className":"gka-eyebrow"} --><p class="gka-eyebrow">Hubungi kami</p><!-- /wp:paragraph -->
-<!-- wp:heading {"fontSize":"2xl"} --><h2 class="wp-block-heading has-2-xl-font-size">Butuh pasokan broiler atau ingin <em class="is-accent">bermitra</em>?</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Tim kami membalas di jam kerja. Ceritakan kebutuhan Anda, kami atur jadwal kunjungan atau panen.</p><!-- /wp:paragraph -->
-<!-- wp:buttons --><div class="wp-block-buttons">
-<!-- wp:button {"className":"is-style-arrow gka-btn-dark"} --><div class="wp-block-button is-style-arrow gka-btn-dark"><a class="wp-block-button__link wp-element-button" href="https://wa.me/6287771491004">Chat WhatsApp</a></div><!-- /wp:button -->
-<!-- wp:button {"className":"is-style-outline gka-btn-line"} --><div class="wp-block-button is-style-outline gka-btn-line"><a class="wp-block-button__link wp-element-button" href="tel:+622545753355">(0254) 575 3355</a></div><!-- /wp:button -->
-</div><!-- /wp:buttons -->
-</div><!-- /wp:group -->
-</div></div>
-<!-- /wp:cover -->
+<!-- wp:html -->
+<section class="gka-cta gka-dark" aria-labelledby="gka-cta-title">
+<div class="gka-marquee" aria-hidden="true"><div class="gka-marquee-track"><?php for ( $r = 0; $r < 2; $r++ ) : ?><span><?php foreach ( $words as $w ) : ?><?php echo esc_html( $w ); ?><i>✦</i><?php endforeach; ?></span><?php endfor; ?></div></div>
+<div class="gka-cta-inner">
+<p class="gka-eyebrow">Hubungi kami</p>
+<h2 id="gka-cta-title" class="gka-cta-title">Butuh pasokan broiler atau ingin <em class="is-accent">bermitra?</em></h2>
+<div class="gka-cta-row">
+<p>Tim kami membalas di jam kerja. Ceritakan kebutuhan Anda, kami atur jadwal kunjungan atau panen.</p>
+<div class="wp-block-buttons">
+<div class="wp-block-button is-style-arrow gka-magnet"><a class="wp-block-button__link wp-element-button" href="https://wa.me/6287771491004">Chat WhatsApp</a></div>
+<div class="wp-block-button is-style-outline gka-btn-ghost"><a class="wp-block-button__link wp-element-button" href="tel:+622545753355">(0254) 575 3355</a></div>
+</div>
+</div>
+</div>
+</section>
+<!-- /wp:html -->
