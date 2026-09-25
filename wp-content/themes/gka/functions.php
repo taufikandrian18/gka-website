@@ -20,6 +20,30 @@ function gka_asset_ver( string $rel ): string {
 add_action( 'wp_enqueue_scripts', function (): void {
 	wp_enqueue_style( 'gka-blocks', get_theme_file_uri( 'assets/css/blocks.css' ), [], gka_asset_ver( 'assets/css/blocks.css' ) );
 	wp_enqueue_script( 'gka-view', get_theme_file_uri( 'assets/js/view.js' ), [], gka_asset_ver( 'assets/js/view.js' ), [ 'strategy' => 'defer', 'in_footer' => true ] );
+	// Motion layer: GSAP 3 + ScrollTrigger (standard no-charge licence) and Lenis smooth scroll, vendored.
+	$defer = [ 'strategy' => 'defer', 'in_footer' => true ];
+	wp_enqueue_script( 'gka-gsap', get_theme_file_uri( 'assets/vendor/gsap.min.js' ), [], '3.15.0', $defer );
+	wp_enqueue_script( 'gka-scrolltrigger', get_theme_file_uri( 'assets/vendor/ScrollTrigger.min.js' ), [ 'gka-gsap' ], '3.15.0', $defer );
+	wp_enqueue_script( 'gka-lenis', get_theme_file_uri( 'assets/vendor/lenis.min.js' ), [], '1.3.26', $defer );
+	wp_enqueue_script( 'gka-motion', get_theme_file_uri( 'assets/js/motion.js' ), [ 'gka-scrolltrigger', 'gka-lenis', 'gka-view' ], gka_asset_ver( 'assets/js/motion.js' ), $defer );
+} );
+
+/**
+ * Intro curtain on the homepage, once per browser session. The flag is set in <head> before first
+ * paint so the page never flashes underneath; motion.js plays it out, and CSS hides it after 3.2s
+ * if scripts fail.
+ */
+add_action( 'wp_head', function (): void {
+	if ( ! is_front_page() ) {
+		return;
+	}
+	echo "<script>try{if(!sessionStorage.getItem('gka-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('gka-preload')}catch(e){}</script>\n";
+}, 0 );
+add_action( 'wp_body_open', function (): void {
+	if ( ! is_front_page() ) {
+		return;
+	}
+	printf( '<div class="gka-loader" aria-hidden="true"><div class="gka-loader-in"><img src="%s" alt="" width="84" height="54"><b>000</b></div></div>', esc_url( get_theme_file_uri( 'assets/brand/gka-mark-light.svg' ) ) );
 } );
 
 add_action( 'wp_head', function (): void {
@@ -43,22 +67,6 @@ add_filter( 'render_block_core/navigation', function ( string $html ): string {
 	] );
 } );
 
-/** Turn the Bisnis query loop into an accordion: each post becomes <details>, the first one open. */
-add_filter( 'render_block_core/post-template', function ( string $html, array $block ): string {
-	if ( ! str_contains( $html, 'gka-acc-title' ) ) {
-		return $html;
-	}
-	$i = 0;
-	return (string) preg_replace_callback(
-		'#<li([^>]*)>\s*(<h3[^>]*gka-acc-title[^>]*>.*?</h3>)(.*?)</li>#s',
-		function ( array $m ) use ( &$i ): string {
-			$open  = 0 === $i++ ? ' open' : '';
-			$title = trim( wp_strip_all_tags( $m[2] ) );
-			return "<li{$m[1]}><details{$open}><summary><span>" . esc_html( $title ) . '</span><span class="gka-pm" aria-hidden="true"></span></summary><div class="gka-acc-body">' . $m[3] . '</div></details></li>';
-		},
-		$html
-	);
-}, 10, 2 );
 
 
 /** [gka_breadcrumbs] – dynamic trail for page heads. */
@@ -180,5 +188,5 @@ function gka_photo( string $slot, string $fallback ): string {
 
 add_action( 'wp_head', function (): void {
 	printf( '<link rel="icon" type="image/svg+xml" href="%s">' . "\n", esc_url( get_theme_file_uri( 'assets/brand/gka-mark.svg' ) ) );
-	echo '<meta name="theme-color" content="#0F3D2B">' . "\n";
+	echo '<meta name="theme-color" content="#08140F">' . "\n";
 }, 2 );

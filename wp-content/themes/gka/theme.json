@@ -19,7 +19,10 @@
         { "slug": "forest-3", "color": "#2A6B4E", "name": "Forest 3" },
         { "slug": "gold", "color": "#E2A93B", "name": "Jagung (aksen)" },
         { "slug": "gold-soft", "color": "#F4E3BC", "name": "Jagung muda" },
-        { "slug": "cream", "color": "#EAE8D6", "name": "Cream" }
+        { "slug": "cream", "color": "#EAE8D6", "name": "Cream" },
+        { "slug": "night", "color": "#08140F", "name": "Night" },
+        { "slug": "night-2", "color": "#0F2119", "name": "Night 2" },
+        { "slug": "sage", "color": "#8E9C91", "name": "Sage (teks redup di gelap)" }
       ]
     },
     "typography": {
@@ -48,7 +51,8 @@
         { "slug": "xl", "size": "28px", "name": "XL", "fluid": { "min": "24px", "max": "28px" } },
         { "slug": "2xl", "size": "40px", "name": "2XL", "fluid": { "min": "28px", "max": "40px" } },
         { "slug": "3xl", "size": "56px", "name": "3XL", "fluid": { "min": "32px", "max": "56px" } },
-        { "slug": "display", "size": "84px", "name": "Display", "fluid": { "min": "40px", "max": "84px" } }
+        { "slug": "display", "size": "84px", "name": "Display", "fluid": { "min": "40px", "max": "84px" } },
+        { "slug": "mega", "size": "148px", "name": "Mega", "fluid": { "min": "52px", "max": "148px" } }
       ]
     },
     "spacing": {
@@ -78,7 +82,7 @@
     "elements": {
       "heading": { "typography": { "fontWeight": "600", "letterSpacing": "-0.03em", "lineHeight": "1.02" } },
       "h1": { "typography": { "fontSize": "var(--wp--preset--font-size--display)", "lineHeight": "0.98", "letterSpacing": "-0.045em" } },
-      "h2": { "typography": { "fontSize": "var(--wp--preset--font-size--3xl)" } },
+      "h2": { "typography": { "fontSize": "var(--wp--preset--font-size--3-xl)" } },
       "h3": { "typography": { "fontSize": "var(--wp--preset--font-size--lg)", "letterSpacing": "-0.02em" } },
       "link": { "color": { "text": "var(--wp--preset--color--forest-2)" } },
       "button": {

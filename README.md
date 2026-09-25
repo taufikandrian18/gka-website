@@ -39,5 +39,11 @@ sudo docker compose run --rm -T cli wp eval-file /opt/gka-bin/apply-photos.php
 - WP-CLI: `cd /opt/gka && sudo docker compose run --rm cli wp plugin list`
 - Backup: `sudo docker exec gka-db sh -c 'mariadb-dump -ugka -p"$MARIADB_PASSWORD" gka' | gzip > ~/gka-$(date +%F).sql.gz`
 
+## Partner / certification logos
+Drop files into `wp-content/themes/gka/assets/logos/` (SVG preferred). The "Mitra & sertifikasi" strip under the homepage hero appears automatically once the folder has logos. Bump `Version:` in `style.css` whenever you add a new pattern file, or WordPress keeps serving its cached pattern list.
+
+## Motion layer
+GSAP 3 + ScrollTrigger and Lenis are vendored in `assets/vendor/` (no CDN). Everything degrades to a static page with `prefers-reduced-motion` or without JS.
+
 ## Production (later, on pt-gka.com)
 Set `GKA_NOINDEX` to `false`, change `DOMAIN`, and point DNS. Replace placeholder images in `wp-content/themes/gka/assets/images/` and the media library.
