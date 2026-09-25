@@ -95,7 +95,7 @@ src=$(docker inspect "$CADDY" --format '{{range .Mounts}}{{if eq .Destination "/
 [[ -n "$src" && -f "$src" ]] || die "Caddyfile is not a bind mount on the host; add Caddyfile.gka (or docker/caddy-gka-handle.caddy) manually."
 # Start from the current Caddyfile minus every block this script added before (old demo domain included).
 tmp=$(mktemp)
-awk '/^# --- GKA/ {skip=1} !skip {print} /^# --- end GKA/ {skip=0}' "$src" > "$tmp"
+awk '/^# --- GKA (demo|legacy domain|\(added)/ {skip=1} !skip {print} /^# --- end GKA( demo| legacy domain)? ---/ {skip=0}' "$src" > "$tmp"
 if grep -q "gka-wordpress" "$tmp"; then
   echo "found your own GKA handle inside the $DOMAIN block, keeping it"
 elif grep -qE "(^|[[:space:],])$DOMAIN([[:space:],{:]|$)" "$tmp"; then
