@@ -4,7 +4,7 @@
  * Slug: gka/cta-contact
  * Categories: gka
  */
-$img = get_theme_file_uri( 'assets/images/lanskap-kandang.webp' );
+$img = gka_photo( 'cta', 'lanskap-kandang.webp' );
 ?>
 <!-- wp:cover {"url":"<?php echo esc_url( $img ); ?>","dimRatio":0,"minHeight":440,"align":"full","className":"gka-cta","layout":{"type":"default"}} -->
 <div class="wp-block-cover alignfull gka-cta" style="min-height:440px"><img class="wp-block-cover__image-background" alt="" src="<?php echo esc_url( $img ); ?>" data-object-fit="cover" loading="lazy"/><span aria-hidden="true" class="wp-block-cover__background has-background-dim-0 has-background-dim"></span><div class="wp-block-cover__inner-container">

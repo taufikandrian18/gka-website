@@ -7,7 +7,7 @@
 $misi = [ 'Meningkatkan kualitas SDM dan teknologi peternakan modern', 'Meningkatkan produksi dengan menambah fasilitas kandang modern', 'Memperluas jangkauan pemasaran', 'Memberikan harga yang kompetitif bagi pelanggan' ];
 $pilar = [ [ 'Kandang sehat & higienis', 'Suhu dan sanitasi terjaga dari kandang sampai ayam tiba di pembeli.' ], [ 'Panen lebih cepat', 'Sistem modern menghasilkan jumlah besar dengan proses panen yang cepat.' ], [ 'Penimbangan transparan', 'Pembeli ikut menyaksikan penimbangan, tidak ada selisih tersembunyi.' ], [ 'Lokasi strategis', 'Dekat jalur distribusi utama menuju Jawa Barat.' ] ];
 ?>
-<!-- wp:image {"sizeSlug":"full","align":"full","className":"gka-band"} --><figure class="wp-block-image alignfull size-full gka-band"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/images/galeri-01.webp' ) ); ?>" alt="Kompleks kandang close house PT Gemilang Karya Agri"/></figure><!-- /wp:image -->
+<!-- wp:image {"sizeSlug":"full","align":"full","className":"gka-band"} --><figure class="wp-block-image alignfull size-full gka-band"><img src="<?php echo esc_url( gka_photo( 'about', 'galeri-01.webp' ) ); ?>" alt="Kompleks kandang close house PT Gemilang Karya Agri"/></figure><!-- /wp:image -->
 <!-- wp:group {"className":"gka-section","layout":{"type":"default"}} -->
 <div class="wp-block-group gka-section">
 <!-- wp:paragraph {"className":"gka-eyebrow"} --><p class="gka-eyebrow">Sejarah</p><!-- /wp:paragraph -->

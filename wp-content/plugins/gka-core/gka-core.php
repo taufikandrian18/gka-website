@@ -14,6 +14,7 @@ define( 'GKA_CORE_DIR', __DIR__ );
 require_once GKA_CORE_DIR . '/src/post-types.php';
 require_once GKA_CORE_DIR . '/src/meta.php';
 require_once GKA_CORE_DIR . '/src/redirects.php';
+require_once GKA_CORE_DIR . '/src/book.php';
 
 add_action( 'init', fn() => add_post_type_support( 'page', 'excerpt' ) );
 

@@ -23,7 +23,7 @@
 <!-- /wp:query -->
 </div><!-- /wp:column -->
 <!-- wp:column --><div class="wp-block-column">
-<!-- wp:image {"sizeSlug":"full","className":"gka-sticky-photo"} --><figure class="wp-block-image size-full gka-sticky-photo"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/images/galeri-01.webp' ) ); ?>" alt="Kandang close house PT Gemilang Karya Agri" loading="lazy"/></figure><!-- /wp:image -->
+<!-- wp:image {"sizeSlug":"full","className":"gka-sticky-photo"} --><figure class="wp-block-image size-full gka-sticky-photo"><img src="<?php echo esc_url( gka_photo( 'bisnis', 'galeri-01.webp' ) ); ?>" alt="Kandang close house PT Gemilang Karya Agri" loading="lazy"/></figure><!-- /wp:image -->
 </div><!-- /wp:column -->
 </div>
 <!-- /wp:columns -->

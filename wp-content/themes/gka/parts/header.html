@@ -1,14 +1,14 @@
 <!-- wp:group {"tagName":"header","className":"gka-header","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
 <header class="wp-block-group gka-header">
 <!-- wp:group {"className":"gka-logo","layout":{"type":"flex","flexWrap":"nowrap"}} -->
-<div class="wp-block-group gka-logo"><!-- wp:html --><a class="gka-mark" href="/" aria-hidden="true" tabindex="-1">GKA</a><!-- /wp:html -->
+<div class="wp-block-group gka-logo"><!-- wp:html --><a class="gka-mark" href="/" aria-hidden="true" tabindex="-1"><img src="/wp-content/themes/gka/assets/brand/gka-mark.svg" alt="" width="56" height="36"></a><!-- /wp:html -->
 <!-- wp:group {"className":"gka-logo-text","layout":{"type":"flex","orientation":"vertical"}} -->
 <div class="wp-block-group gka-logo-text"><!-- wp:site-title {"level":0,"isLink":true} /-->
 <!-- wp:paragraph {"className":"gka-logo-sub"} --><p class="gka-logo-sub">Grup Gemilang Karya Mandiri</p><!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:group -->
 
-<!-- wp:navigation {"ariaLabel":"Menu utama","className":"gka-menu","overlayMenu":"mobile","openSubmenusOnClick":false,"showSubmenuIcon":true,"layout":{"type":"flex","justifyContent":"center"}} -->
+<!-- wp:navigation {"ariaLabel":"Menu utama","className":"gka-menu","overlayMenu":"never","openSubmenusOnClick":false,"showSubmenuIcon":true,"layout":{"type":"flex","justifyContent":"center"}} -->
 <!-- wp:navigation-link {"label":"Beranda","url":"/","kind":"custom","isTopLevelLink":true} /-->
 <!-- wp:navigation-submenu {"label":"About","url":"/tentang-kami/","kind":"custom"} -->
 <!-- wp:navigation-link {"label":"About Us","url":"/tentang-kami/","kind":"custom"} /-->
@@ -34,6 +34,7 @@
 <!-- wp:navigation-submenu {"label":"Publikasi","url":"/publikasi/","kind":"custom"} -->
 <!-- wp:navigation-link {"label":"Publikasi","url":"/publikasi/","kind":"custom"} /-->
 <!-- wp:navigation-link {"label":"Galeri","url":"/galeri/","kind":"custom"} /-->
+<!-- wp:navigation-link {"label":"Company Profile","url":"/company-profile/","kind":"custom"} /-->
 <!-- /wp:navigation-submenu -->
 <!-- wp:navigation-link {"label":"Karir","url":"/karir/","kind":"custom","isTopLevelLink":true} /-->
 <!-- wp:navigation-link {"label":"Hubungi Kami","url":"/hubungi-kami/","kind":"custom","className":"gka-menu-contact","isTopLevelLink":true} /-->
@@ -42,5 +43,8 @@
 <!-- wp:buttons {"className":"gka-header-cta"} -->
 <div class="wp-block-buttons gka-header-cta"><!-- wp:button {"className":"is-style-arrow"} --><div class="wp-block-button is-style-arrow"><a class="wp-block-button__link wp-element-button" href="/hubungi-kami/">Hubungi Kami</a></div><!-- /wp:button --></div>
 <!-- /wp:buttons -->
+<!-- wp:html -->
+<button class="gka-burger" type="button" aria-controls="gka-drawer" aria-expanded="false" aria-label="Buka menu"><span></span><span></span></button>
+<!-- /wp:html -->
 </header>
 <!-- /wp:group -->

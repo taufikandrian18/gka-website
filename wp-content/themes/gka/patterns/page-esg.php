@@ -16,7 +16,7 @@ $cols = [
 <!-- wp:group {"className":"gka-section","layout":{"type":"default"}} -->
 <div class="wp-block-group gka-section">
 <!-- wp:media-text {"mediaType":"image","className":"gka-feature","verticalAlignment":"center"} -->
-<div class="wp-block-media-text is-stacked-on-mobile is-vertically-aligned-center gka-feature"><figure class="wp-block-media-text__media"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/images/galeri-13.webp' ) ); ?>" alt="Komitmen higienitas dan mutu"/></figure><div class="wp-block-media-text__content">
+<div class="wp-block-media-text is-stacked-on-mobile is-vertically-aligned-center gka-feature"><figure class="wp-block-media-text__media"><img src="<?php echo esc_url( gka_photo( 'esg', 'galeri-13.webp' ) ); ?>" alt="Komitmen higienitas dan mutu"/></figure><div class="wp-block-media-text__content">
 <!-- wp:paragraph {"className":"gka-eyebrow"} --><p class="gka-eyebrow">Komitmen</p><!-- /wp:paragraph -->
 <!-- wp:heading {"fontSize":"2xl"} --><h2 class="wp-block-heading has-2-xl-font-size">Higienis dari kandang sampai ke tangan pembeli</h2><!-- /wp:heading -->
 <!-- wp:paragraph --><p>Biosekuriti kendaraan, kebersihan kandang harian, dan penimbangan terbuka adalah praktik yang kami dokumentasikan di halaman ini.</p><!-- /wp:paragraph -->

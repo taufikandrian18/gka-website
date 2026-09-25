@@ -65,6 +65,8 @@ wp plugin delete hello akismet >/dev/null 2>&1 || true
 wp theme delete twentytwentythree twentytwentyfour >/dev/null 2>&1 || true
 wp option update blog_public 0
 wp eval-file /opt/gka-bin/seed.php
+wp eval-file /opt/gka-bin/fetch-assets.php || echo "(photo import failed; placeholders stay)"
+wp eval-file /opt/gka-bin/apply-photos.php || echo "(curated photos not applied)"
 wp rewrite structure '/%postname%/' --hard
 wp rewrite flush --hard
 

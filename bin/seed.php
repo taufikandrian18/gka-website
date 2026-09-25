@@ -153,6 +153,7 @@ foreach ( [ [ 'Nama Direktur Utama', 'Direktur Utama' ], [ 'Nama Direktur', 'Dir
 $about = gka_seed( 'page', 'About Us', [ 'post_name' => 'tentang-kami', 'post_excerpt' => 'PT Gemilang Karya Agri adalah anak perusahaan PT Gemilang Karya Mandiri yang bergerak di bidang peternakan ayam potong modern di Kramatwatu, Serang, Banten.', 'post_content' => '<!-- wp:pattern {"slug":"gka/page-about"} /-->' ] );
 gka_seed( 'page', 'Our Team & Board', [ 'post_name' => 'tim-dan-direksi', 'post_parent' => $about, 'post_excerpt' => 'Jajaran direksi, manajemen, dan staf yang menjalankan operasi kandang setiap hari.', 'post_content' => '<!-- wp:pattern {"slug":"gka/page-team"} /-->' ] );
 gka_seed( 'page', 'ESG', [ 'post_name' => 'esg', 'post_excerpt' => 'Kebijakan, penghargaan, dan sertifikasi kami, lengkap dengan dokumen yang bisa diunduh.', 'post_content' => '<!-- wp:pattern {"slug":"gka/page-esg"} /-->' ] );
+gka_seed( 'page', 'Company Profile', [ 'post_name' => 'company-profile', 'post_excerpt' => 'Pratinjau buku company profile PT Gemilang Karya Agri — hanya bisa dilihat di halaman ini.', 'post_content' => '<!-- wp:pattern {"slug":"gka/page-book"} /-->' ] );
 gka_seed( 'page', 'Hubungi Kami', [ 'post_name' => 'hubungi-kami', 'post_excerpt' => 'Untuk pembelian broiler, kemitraan peternak, atau informasi lainnya. Cara tercepat adalah WhatsApp.', 'post_content' => '<!-- wp:pattern {"slug":"gka/page-contact"} /-->' ] );
 
 /* Contact Form 7 form, when the plugin is active */

@@ -7,10 +7,19 @@ add_action( 'after_setup_theme', function (): void {
 	add_editor_style( 'assets/css/blocks.css' );
 } );
 
+/**
+ * Cache-busting version for a theme asset: file modification time, so every deploy
+ * that actually changes a file changes its ?ver= and browsers refetch it.
+ */
+function gka_asset_ver( string $rel ): string {
+	$path = get_theme_file_path( $rel );
+	$mtime = file_exists( $path ) ? filemtime( $path ) : 0;
+	return $mtime ? (string) $mtime : (string) wp_get_theme()->get( 'Version' );
+}
+
 add_action( 'wp_enqueue_scripts', function (): void {
-	$ver = wp_get_theme()->get( 'Version' );
-	wp_enqueue_style( 'gka-blocks', get_theme_file_uri( 'assets/css/blocks.css' ), [], $ver );
-	wp_enqueue_script( 'gka-view', get_theme_file_uri( 'assets/js/view.js' ), [], $ver, [ 'strategy' => 'defer', 'in_footer' => true ] );
+	wp_enqueue_style( 'gka-blocks', get_theme_file_uri( 'assets/css/blocks.css' ), [], gka_asset_ver( 'assets/css/blocks.css' ) );
+	wp_enqueue_script( 'gka-view', get_theme_file_uri( 'assets/js/view.js' ), [], gka_asset_ver( 'assets/js/view.js' ), [ 'strategy' => 'defer', 'in_footer' => true ] );
 } );
 
 add_action( 'wp_head', function (): void {
@@ -152,3 +161,24 @@ add_shortcode( 'gka_contact_form', function (): string {
 	}
 	return '<p>Formulir sedang disiapkan. Hubungi kami langsung lewat <a href="https://wa.me/6287771491004">WhatsApp</a> atau <a href="mailto:yanti@pt-gka.com">email</a>.</p>';
 } );
+
+/** Real photos fetched by bin/fetch-assets.php live in uploads/gka-photos; fall back to theme placeholders. */
+function gka_photo( string $slot, string $fallback ): string {
+	// 1. Curated demo photos shipped with the theme. 2. Photos pulled from pt-gka.com. 3. Placeholder.
+	if ( file_exists( get_theme_file_path( "assets/photos/{$slot}.webp" ) ) ) {
+		return get_theme_file_uri( "assets/photos/{$slot}.webp" );
+	}
+	static $up = null;
+	$up = $up ?? wp_upload_dir();
+	foreach ( [ 'webp', 'jpg' ] as $ext ) {
+		if ( file_exists( "{$up['basedir']}/gka-photos/{$slot}.{$ext}" ) ) {
+			return "{$up['baseurl']}/gka-photos/{$slot}.{$ext}";
+		}
+	}
+	return get_theme_file_uri( 'assets/images/' . $fallback );
+}
+
+add_action( 'wp_head', function (): void {
+	printf( '<link rel="icon" type="image/svg+xml" href="%s">' . "\n", esc_url( get_theme_file_uri( 'assets/brand/gka-mark.svg' ) ) );
+	echo '<meta name="theme-color" content="#0F3D2B">' . "\n";
+}, 2 );

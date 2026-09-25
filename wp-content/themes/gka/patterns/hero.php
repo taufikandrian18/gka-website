@@ -5,7 +5,7 @@
  * Categories: gka
  * Inserter: no
  */
-$img = get_theme_file_uri( 'assets/images/hero-close-house.webp' );
+$img = gka_photo( 'hero', 'hero-close-house.webp' );
 ?>
 <!-- wp:cover {"url":"<?php echo esc_url( $img ); ?>","dimRatio":0,"minHeight":660,"isDark":true,"align":"full","className":"gka-hero","layout":{"type":"default"}} -->
 <div class="wp-block-cover alignfull is-dark gka-hero" style="min-height:660px"><img class="wp-block-cover__image-background" alt="" src="<?php echo esc_url( $img ); ?>" data-object-fit="cover" fetchpriority="high"/><span aria-hidden="true" class="wp-block-cover__background has-background-dim-0 has-background-dim"></span><div class="wp-block-cover__inner-container">
@@ -22,6 +22,9 @@ $img = get_theme_file_uri( 'assets/images/hero-close-house.webp' );
 </div><!-- /wp:buttons -->
 </div><!-- /wp:group -->
 </div><!-- /wp:group -->
+<!-- wp:html -->
+<button type="button" class="gka-scroll-cue" aria-label="Gulir ke konten"><span>Gulir</span><i aria-hidden="true"></i></button>
+<!-- /wp:html -->
 <!-- wp:group {"className":"gka-statbar","layout":{"type":"default"}} -->
 <div class="wp-block-group gka-statbar">
 <!-- wp:paragraph --><p><strong>150.000+</strong>ekor kapasitas produksi</p><!-- /wp:paragraph -->
