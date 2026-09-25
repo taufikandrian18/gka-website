@@ -2,6 +2,13 @@
 
 Target: `https://gka-demo.taufikandrian.my.id` on the Ubuntu VPS, behind the existing `n8n-caddy-1`.
 
+## Build the deploy zip (on your Mac, inside the repo)
+```bash
+git checkout main && git pull
+git archive --format=zip -o ~/Downloads/gka-deploy.zip HEAD
+```
+The zip has the repo layout (`setup.sh`, `docker-compose.yml`, `wp-content/`, `bin/`) that `setup.sh` expects.
+
 ## First deploy
 
 On your Mac:
@@ -18,7 +25,36 @@ cd /opt/gka && sudo bash setup.sh
 The script stops before touching Caddy and asks `y/N`. It prints the WordPress admin password once.
 
 ## Update theme/plugin later
+
+### Automatic (GitHub Actions)
+Every push to `main` that touches `wp-content/`, `bin/` or `docker-compose.yml` runs `.github/workflows/deploy.yml`:
+PHP/JSON/JS checks, then rsync to `/opt/gka` over SSH, `docker compose restart wordpress`, and a smoke test.
+It never touches `.env`, the database or uploads. Run it by hand from the Actions tab (**Deploy demo → Run workflow**).
+
+One-time setup:
 ```bash
+# On your Mac: a key used only by GitHub Actions
+ssh-keygen -t ed25519 -f ~/.ssh/gka_deploy -N "" -C "github-actions-gka"
+ssh-copy-id -i ~/.ssh/gka_deploy.pub ubuntu@43.133.130.148
+ssh -i ~/.ssh/gka_deploy ubuntu@43.133.130.148 'sudo -n true && echo sudo-ok'   # must print sudo-ok
+ssh-keyscan -H 43.133.130.148                                                   # copy the output
+```
+Then in GitHub → **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Secret | Value |
+| --- | --- |
+| `VPS_HOST` | `43.133.130.148` |
+| `VPS_USER` | `ubuntu` |
+| `VPS_SSH_KEY` | contents of `~/.ssh/gka_deploy` (the private key, including the BEGIN/END lines) |
+| `VPS_KNOWN_HOSTS` | the `ssh-keyscan` output |
+
+Optional repository variables: `VPS_PORT` (default 22), `DEMO_URL` (default the demo domain).
+
+### Manual (zip)
+Build the zip as above, then:
+```bash
+scp ~/Downloads/gka-deploy.zip ubuntu@43.133.130.148:~
+ssh ubuntu@43.133.130.148
 sudo unzip -o ~/gka-deploy.zip -d /opt/gka && cd /opt/gka && sudo docker compose restart wordpress
 ```
 ## After any update that changes URLs (e.g. the book preview)

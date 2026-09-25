@@ -1,0 +1,93 @@
+# Deploys the theme, plugin and helper scripts to the demo VPS on every push to main.
+# It replaces the manual "scp gka-deploy.zip + unzip + restart" routine in README.md.
+#
+# Repository secrets (Settings -> Secrets and variables -> Actions -> Secrets):
+#   VPS_HOST          43.133.130.148
+#   VPS_USER          ubuntu            (needs passwordless sudo: `sudo -n true` must succeed)
+#   VPS_SSH_KEY       private key of a deploy-only key pair (public half in ~/.ssh/authorized_keys on the VPS)
+#   VPS_KNOWN_HOSTS   output of `ssh-keyscan -H 43.133.130.148` (pins the server's host key)
+# Optional repository variables (same page -> Variables):
+#   VPS_PORT          default 22
+#   DEMO_URL          default https://gka-demo.taufikandrian.my.id
+#
+# Never touched on the server: /opt/gka/.env, the database volume, uploads, Caddy.
+name: Deploy demo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'wp-content/**'
+      - 'bin/**'
+      - 'docker-compose.yml'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-demo
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP syntax
+        run: find wp-content bin -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
+      - name: theme.json is valid JSON
+        run: php -r 'json_decode(file_get_contents("wp-content/themes/gka/theme.json"), false, 512, JSON_THROW_ON_ERROR);'
+      - name: JS syntax
+        run: for f in wp-content/themes/gka/assets/js/*.js; do node --check "$f"; done
+
+  deploy:
+    needs: check
+    runs-on: ubuntu-latest
+    environment:
+      name: demo
+      url: ${{ vars.DEMO_URL || 'https://gka-demo.taufikandrian.my.id' }}
+    env:
+      VPS_HOST: ${{ secrets.VPS_HOST }}
+      VPS_USER: ${{ secrets.VPS_USER }}
+      VPS_PORT: ${{ vars.VPS_PORT || '22' }}
+      DEMO_URL: ${{ vars.DEMO_URL || 'https://gka-demo.taufikandrian.my.id' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          [ -n "$VPS_HOST" ] && [ -n "$VPS_USER" ] && [ -n "$SSH_KEY" ] && [ -n "$KNOWN_HOSTS" ] \
+            || { echo "::error::Set VPS_HOST, VPS_USER, VPS_SSH_KEY and VPS_KNOWN_HOSTS secrets"; exit 1; }
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          printf 'Host vps\n  HostName %s\n  User %s\n  Port %s\n  IdentityFile ~/.ssh/deploy_key\n  IdentitiesOnly yes\n' "$VPS_HOST" "$VPS_USER" "$VPS_PORT" > ~/.ssh/config
+          ssh vps 'sudo -n true' || { echo "::error::$VPS_USER on the VPS needs passwordless sudo"; exit 1; }
+
+      - name: Sync files to /opt/gka
+        run: |
+          # Owned by www-data (33) like setup.sh leaves them; --delete removes files deleted in git.
+          push_dir() { rsync -rlptz --delete --chown=33:33 --rsync-path='sudo rsync' "$1" "vps:/opt/gka/$2"; }
+          push_dir wp-content/themes/gka/          wp-content/themes/gka/
+          push_dir wp-content/plugins/gka-core/    wp-content/plugins/gka-core/
+          push_dir bin/                            bin/
+          rsync -ptz --rsync-path='sudo rsync' docker-compose.yml setup.sh Caddyfile.gka README.md vps:/opt/gka/
+
+      - name: Restart WordPress
+        run: ssh vps 'cd /opt/gka && sudo docker compose up -d db wordpress && sudo docker compose restart wordpress'
+
+      - name: Smoke test
+        run: |
+          sleep 5
+          fail=0
+          for p in / /tentang-kami/ /bisnis-kami/ /esg/ /karir/ /hubungi-kami/; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --retry 5 --retry-delay 4 --retry-all-errors "$DEMO_URL$p")
+            printf '%-18s %s\n' "$p" "$code"
+            [ "$code" = 200 ] || fail=1
+          done
+          exit $fail

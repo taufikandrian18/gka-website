@@ -42,7 +42,7 @@
     drawer.setAttribute('data-lenis-prevent', '');
     drawer.innerHTML = `
       <div class="gka-d-top">
-        <a class="gka-d-logo" href="/"><img src="/wp-content/themes/gka/assets/brand/gka-mark-light.svg" alt="" width="50" height="32"><span>Gemilang Karya Agri</span></a>
+        <a class="gka-d-logo" href="/"><img src="/wp-content/themes/gka/assets/brand/gka-mark.svg" alt="" width="50" height="32"><span>Gemilang Karya Agri</span></a>
         <button type="button" class="gka-d-close" aria-label="Tutup menu"><span></span><span></span></button>
       </div>
       <nav aria-label="Menu utama seluler"><ul class="gka-d-list">${items}</ul></nav>

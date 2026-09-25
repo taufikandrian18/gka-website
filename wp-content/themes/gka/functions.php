@@ -43,7 +43,7 @@ add_action( 'wp_body_open', function (): void {
 	if ( ! is_front_page() ) {
 		return;
 	}
-	printf( '<div class="gka-loader" aria-hidden="true"><div class="gka-loader-in"><img src="%s" alt="" width="84" height="54"><b>000</b></div></div>', esc_url( get_theme_file_uri( 'assets/brand/gka-mark-light.svg' ) ) );
+	printf( '<div class="gka-loader" aria-hidden="true"><div class="gka-loader-in"><img src="%s" alt="" width="84" height="54"><b>000</b></div></div>', esc_url( get_theme_file_uri( 'assets/brand/gka-mark.svg' ) ) );
 } );
 
 add_action( 'wp_head', function (): void {
