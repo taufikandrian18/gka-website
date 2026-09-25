@@ -1,6 +1,11 @@
 # GKA demo deploy
 
-Target: `https://gka-demo.taufikandrian.my.id` on the Ubuntu VPS, behind the existing `n8n-caddy-1`.
+Target: `https://website.taufikandrian.my.id/gka/` (admin: `/gka/wp-admin/`) on the Ubuntu VPS, behind the existing `n8n-caddy-1`.
+The old `https://gka-demo.taufikandrian.my.id` redirects there (301, path kept).
+
+How the subdirectory works: Caddy forwards `/gka/*` unchanged to `gka-wordpress`, Apache aliases `/gka`
+onto the WordPress root (`docker/apache-gka.conf`), and `WP_HOME` is `https://$DOMAIN$BASE_PATH` from `.env`.
+The theme prefixes its root-relative links (`/karir/`, `/wp-content/...`) with the base path at render time.
 
 ## Build the deploy zip (on your Mac, inside the repo)
 ```bash
@@ -23,6 +28,20 @@ sudo mkdir -p /opt/gka && sudo unzip -o ~/gka-deploy.zip -d /opt/gka
 cd /opt/gka && sudo bash setup.sh
 ```
 The script stops before touching Caddy and asks `y/N`. It prints the WordPress admin password once.
+
+## Move from gka-demo.taufikandrian.my.id to website.taufikandrian.my.id/gka (one time)
+Deploy the new code first (zip or pipeline), then on the VPS:
+```bash
+cd /opt/gka && sudo bash setup.sh
+```
+It updates `DOMAIN`/`BASE_PATH` in `.env` (passwords untouched), recreates WordPress, backs up the database to
+`/opt/gka/gka-before-move-*.sql`, rewrites stored URLs with `wp search-replace`, then shows the Caddyfile diff and
+asks before reloading Caddy. If `website.taufikandrian.my.id` already has its own block in the Caddyfile, the script
+stops and prints `docker/caddy-gka-handle.caddy`: paste it inside that block (above any catch-all
+`handle`/`reverse_proxy`/`file_server`) and run `setup.sh` again.
+
+Undo: `sudo docker compose run --rm -T cli wp db import - < gka-before-move-*.sql`, set `DOMAIN` back in `.env`,
+remove `BASE_PATH`, restore the newest `Caddyfile.bak-*`, and `sudo docker compose up -d`.
 
 ## Update theme/plugin later
 

@@ -8,9 +8,10 @@
 #   VPS_KNOWN_HOSTS   output of `ssh-keyscan -H 43.133.130.148` (pins the server's host key)
 # Optional repository variables (same page -> Variables):
 #   VPS_PORT          default 22
-#   DEMO_URL          default https://gka-demo.taufikandrian.my.id
+#   DEMO_URL          default https://website.taufikandrian.my.id/gka
 #
 # Never touched on the server: /opt/gka/.env, the database volume, uploads, Caddy.
+# Address changes (domain, /gka path, Caddy routes) are applied by running setup.sh once on the VPS.
 name: Deploy demo
 
 on:
@@ -20,6 +21,7 @@ on:
       - 'wp-content/**'
       - 'bin/**'
       - 'docker-compose.yml'
+      - 'docker/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
@@ -47,12 +49,12 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: demo
-      url: ${{ vars.DEMO_URL || 'https://gka-demo.taufikandrian.my.id' }}
+      url: ${{ vars.DEMO_URL || 'https://website.taufikandrian.my.id/gka' }}
     env:
       VPS_HOST: ${{ secrets.VPS_HOST }}
       VPS_USER: ${{ secrets.VPS_USER }}
       VPS_PORT: ${{ vars.VPS_PORT || '22' }}
-      DEMO_URL: ${{ vars.DEMO_URL || 'https://gka-demo.taufikandrian.my.id' }}
+      DEMO_URL: ${{ vars.DEMO_URL || 'https://website.taufikandrian.my.id/gka' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -76,6 +78,7 @@ jobs:
           push_dir wp-content/themes/gka/          wp-content/themes/gka/
           push_dir wp-content/plugins/gka-core/    wp-content/plugins/gka-core/
           push_dir bin/                            bin/
+          push_dir docker/                         docker/
           rsync -ptz --rsync-path='sudo rsync' docker-compose.yml setup.sh Caddyfile.gka README.md vps:/opt/gka/
 
       - name: Restart WordPress

@@ -1,0 +1,10 @@
+	# --- GKA WordPress (paste inside the existing website.taufikandrian.my.id { } block,
+	#     ABOVE any catch-all `handle` / `reverse_proxy` / `file_server` for that site) ---
+	redir /gka /gka/ 308
+	handle /gka/* {
+		header X-Robots-Tag "noindex, nofollow"
+		reverse_proxy gka-wordpress:80 {
+			header_up X-Forwarded-Proto https
+		}
+	}
+	# --- end GKA WordPress ---

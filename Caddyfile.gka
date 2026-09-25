@@ -1,10 +1,14 @@
-
-# --- GKA demo (added by /opt/gka/setup.sh) ---
-gka-demo.taufikandrian.my.id {
+# --- GKA (added by /opt/gka/setup.sh) ---
+# Used only when the Caddyfile has no block for website.taufikandrian.my.id yet.
+# If it does, setup.sh asks you to paste docker/caddy-gka-handle.caddy into that block instead.
+website.taufikandrian.my.id {
 	encode zstd gzip
-	header X-Robots-Tag "noindex, nofollow"
-	reverse_proxy gka-wordpress:80 {
-		header_up X-Forwarded-Proto https
+	redir /gka /gka/ 308
+	handle /gka/* {
+		header X-Robots-Tag "noindex, nofollow"
+		reverse_proxy gka-wordpress:80 {
+			header_up X-Forwarded-Proto https
+		}
 	}
 }
-# --- end GKA demo ---
+# --- end GKA ---
