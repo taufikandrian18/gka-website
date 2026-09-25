@@ -36,7 +36,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: PHP syntax
         run: find wp-content bin -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
       - name: theme.json is valid JSON
@@ -56,7 +56,7 @@ jobs:
       VPS_PORT: ${{ vars.VPS_PORT || '22' }}
       DEMO_URL: ${{ vars.DEMO_URL || 'https://website.taufikandrian.my.id/gka' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Configure SSH
         env:
@@ -68,8 +68,28 @@ jobs:
           install -m 700 -d ~/.ssh
           printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
           printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
-          printf 'Host vps\n  HostName %s\n  User %s\n  Port %s\n  IdentityFile ~/.ssh/deploy_key\n  IdentitiesOnly yes\n' "$VPS_HOST" "$VPS_USER" "$VPS_PORT" > ~/.ssh/config
-          ssh vps 'sudo -n true' || { echo "::error::$VPS_USER on the VPS needs passwordless sudo"; exit 1; }
+          printf 'Host vps\n  HostName %s\n  User %s\n  Port %s\n  IdentityFile ~/.ssh/deploy_key\n  IdentitiesOnly yes\n  BatchMode yes\n  ConnectTimeout 20\n' "$VPS_HOST" "$VPS_USER" "$VPS_PORT" > ~/.ssh/config
+
+          # Host key: VPS_KNOWN_HOSTS must contain an entry for exactly the VPS_HOST value (IP vs domain matters).
+          lookup="$VPS_HOST"; [ "$VPS_PORT" = 22 ] || lookup="[$VPS_HOST]:$VPS_PORT"
+          if ! ssh-keygen -F "$lookup" -f ~/.ssh/known_hosts > /dev/null; then
+            echo "::error::VPS_KNOWN_HOSTS has no entry for the VPS_HOST value. Regenerate it with: ssh-keyscan -H -p $VPS_PORT <the exact VPS_HOST value>"
+            exit 1
+          fi
+          if ! ssh vps true 2> ssh.err; then
+            cat ssh.err
+            if grep -q 'Host key verification failed\|REMOTE HOST IDENTIFICATION HAS CHANGED' ssh.err; then
+              echo "Fingerprints in VPS_KNOWN_HOSTS:"; ssh-keygen -lf ~/.ssh/known_hosts || true
+              echo "Fingerprints the server offers now:"; ssh-keyscan -p "$VPS_PORT" "$VPS_HOST" 2>/dev/null | ssh-keygen -lf - || true
+              echo "::error::Host key mismatch. If the fingerprints above are your server's, replace VPS_KNOWN_HOSTS with the output of: ssh-keyscan -H -p $VPS_PORT <VPS_HOST>"
+            elif grep -q 'Permission denied' ssh.err; then
+              echo "::error::The server refused VPS_SSH_KEY. Add the matching public key to ~$VPS_USER/.ssh/authorized_keys on the VPS."
+            else
+              echo "::error::Could not reach $VPS_USER@VPS_HOST on port $VPS_PORT (see message above)."
+            fi
+            exit 1
+          fi
+          ssh vps 'sudo -n true' || { echo "::error::SSH works, but $VPS_USER needs passwordless sudo on the VPS"; exit 1; }
 
       - name: Sync files to /opt/gka
         run: |
