@@ -51,7 +51,7 @@
       <nav aria-label="Menu utama seluler"><ul class="gka-d-list">${items}</ul></nav>
       <div class="gka-d-foot">
         <a class="gka-d-cta" href="${home}hubungi-kami/">Hubungi Kami <span aria-hidden="true">→</span></a>
-        <div class="gka-d-contact"><a href="https://wa.me/6287771491004">WhatsApp</a><a href="tel:+622545753355">(0254) 575 3355</a></div>
+        <div class="gka-d-contact"><a href="${esc(cfg.wa || '#')}">WhatsApp</a><a href="${esc(cfg.tel || '#')}">${esc(cfg.phone || '')}</a></div>
       </div>`;
     document.body.appendChild(drawer);
 

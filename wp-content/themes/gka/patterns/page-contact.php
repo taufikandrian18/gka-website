@@ -14,13 +14,13 @@
 <!-- wp:column --><div class="wp-block-column">
 <!-- wp:html -->
 <div class="gka-info"><dl>
-<div><dt>Alamat</dt><dd>Jl. Bojonegara No. 99, Walikukun, Terate, Kramatwatu, Serang, Banten</dd></div>
-<div><dt>Telepon</dt><dd><a href="tel:+622545753355">(0254) 575 3355</a></dd></div>
-<div><dt>Fax</dt><dd>(0254) 849 5241</dd></div>
-<div><dt>Email</dt><dd><a href="mailto:yanti@pt-gka.com">yanti@pt-gka.com</a></dd></div>
-<div><dt>WhatsApp</dt><dd><a href="https://wa.me/6287771491004">+62 877-7149-1004</a></dd></div>
+<div><dt>Alamat</dt><dd><?php echo nl2br( esc_html( gka_c( 'address' ) ) ); ?></dd></div>
+<div><dt>Telepon</dt><dd><a href="tel:<?php echo esc_attr( gka_c_tel( gka_c( 'phone' ) ) ); ?>"><?php echo esc_html( gka_c( 'phone' ) ); ?></a></dd></div>
+<?php if ( gka_c( 'fax' ) ) : ?><div><dt>Fax</dt><dd><?php echo esc_html( gka_c( 'fax' ) ); ?></dd></div><?php endif; ?>
+<div><dt>Email</dt><dd><a href="mailto:<?php echo esc_attr( gka_c( 'email' ) ); ?>"><?php echo esc_html( gka_c( 'email' ) ); ?></a></dd></div>
+<div><dt>WhatsApp</dt><dd><a href="<?php echo esc_url( gka_c_wa() ); ?>"><?php echo esc_html( gka_c( 'whatsapp' ) ); ?></a></dd></div>
 </dl></div>
-<iframe class="gka-map" title="Peta lokasi PT Gemilang Karya Agri" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=-6.00134,106.08568&amp;z=15&amp;output=embed"></iframe>
+<iframe class="gka-map" title="Peta lokasi <?php echo esc_attr( gka_c( 'company' ) ); ?>" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="<?php echo esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( gka_c( 'map' ) ) . '&z=15&output=embed' ); ?>"></iframe>
 <!-- /wp:html -->
 </div><!-- /wp:column -->
 </div>

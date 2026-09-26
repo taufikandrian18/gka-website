@@ -3,22 +3,28 @@
  * Title: Pernyataan tentang kami + angka
  * Slug: gka/statement
  * Categories: gka
+ *
+ * Copy comes from wp-admin → GKA Konten → Tentang & angka.
  */
-$stats = [ [ '150000', '+', 'ekor kapasitas produksi' ], [ '25000', '', 'ekor per lantai kandang' ], [ '2', '', 'kandang close house bertingkat' ], [ '2016', '', 'mulai beroperasi' ] ];
+$pill      = '<img class="gka-pill" src="' . esc_url( gka_photo( 'pill', 'pill-broiler.webp' ) ) . '" alt="" width="84" height="40">';
+$statement = str_replace( '[foto]', $pill, gka_ct( 'about_text' ) );
 ?>
-<!-- wp:group {"tagName":"section","anchor":"tentang","className":"gka-section gka-dark gka-intro-sec","layout":{"type":"constrained","contentSize":"1240px"}} -->
-<section id="tentang" class="wp-block-group gka-section gka-dark gka-intro-sec">
-<!-- wp:paragraph {"className":"gka-eyebrow"} --><p class="gka-eyebrow">Tentang kami</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"gka-statement gka-scrub"} --><p class="gka-statement gka-scrub">Sejak 2016, anak perusahaan PT Gemilang Karya Mandiri ini membesarkan ayam potong <img class="gka-pill" src="<?php echo esc_url( gka_photo( 'pill', 'pill-broiler.webp' ) ); ?>" alt="" width="84" height="40"> di kandang modern bertingkat, dengan satu tujuan: menjadi peternakan ayam yang <em class="is-accent">produktif dan dipercaya pembeli.</em></p><!-- /wp:paragraph -->
 <!-- wp:html -->
+<section id="tentang" class="gka-section gka-dark gka-intro-sec has-global-padding is-layout-constrained">
+<p class="gka-eyebrow"><?php echo gka_ct( 'about_eyebrow' ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in gka_ct ?></p>
+<p class="gka-statement gka-scrub"><?php echo $statement; // phpcs:ignore ?></p>
 <dl class="gka-counters">
-<?php foreach ( $stats as [ $n, $suffix, $label ] ) : ?>
-<div><dt><?php echo esc_html( $label ); ?></dt><dd><span class="gka-count" data-to="<?php echo esc_attr( $n ); ?>"><?php echo esc_html( '2016' === $n || '2' === $n ? $n : number_format( (int) $n, 0, ',', '.' ) ); ?></span><?php echo esc_html( $suffix ); ?></dd></div>
-<?php endforeach; ?>
+<?php for ( $n = 1; $n <= 4; $n++ ) :
+	$num = gka_c( "stat{$n}_num" );
+	$to  = preg_replace( '/\D+/', '', $num );
+	?>
+<div><dt><?php echo esc_html( gka_c( "stat{$n}_label" ) ); ?></dt><dd><span class="gka-count"<?php echo '' !== $to && preg_match( '/^[\d.]+$/', $num ) ? ' data-to="' . esc_attr( $to ) . '"' : ''; ?>><?php echo esc_html( $num ); ?></span><?php echo esc_html( gka_c( "stat{$n}_suf" ) ); ?></dd></div>
+<?php endfor; ?>
 </dl>
-<!-- /wp:html -->
-<!-- wp:group {"className":"gka-meta","layout":{"type":"flex","flexWrap":"wrap"}} -->
-<div class="wp-block-group gka-meta"><!-- wp:paragraph --><p><strong>Lokasi</strong> · Kramatwatu, Serang, Banten</p><!-- /wp:paragraph --><!-- wp:paragraph --><p><strong>Sistem</strong> · Close house, 3 lantai per kandang</p><!-- /wp:paragraph --><!-- wp:paragraph {"className":"gka-more"} --><p class="gka-more"><a href="/tentang-kami/">Baca profil perusahaan</a></p><!-- /wp:paragraph --></div>
-<!-- /wp:group -->
+<div class="gka-meta is-layout-flex">
+<p><strong>Lokasi</strong> · <?php echo esc_html( gka_c( 'about_lokasi' ) ); ?></p>
+<p><strong>Sistem</strong> · <?php echo esc_html( gka_c( 'about_sistem' ) ); ?></p>
+<p class="gka-more"><a href="<?php echo esc_url( gka_c( 'about_link_url' ) ); ?>"><?php echo esc_html( gka_c( 'about_link' ) ); ?></a></p>
+</div>
 </section>
-<!-- /wp:group -->
+<!-- /wp:html -->

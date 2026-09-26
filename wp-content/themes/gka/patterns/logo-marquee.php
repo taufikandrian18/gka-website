@@ -5,16 +5,24 @@
  * Categories: gka
  * Inserter: no
  */
-$files = glob( get_theme_file_path( 'assets/logos/*.{svg,png,webp,jpg,jpeg}' ), GLOB_BRACE ) ?: [];
-sort( $files );
-if ( ! $files ) {
-	return;
-}
+// Logos chosen in wp-admin → GKA Konten → Ajakan & logo; files in assets/logos/ when none are chosen.
 $items = '';
+foreach ( gka_c_imgs( 'logos' ) as $att ) {
+	$src = wp_get_attachment_image_url( $att, 'medium' );
+	if ( $src ) {
+		$alt    = get_post_meta( $att, '_wp_attachment_image_alt', true ) ?: get_the_title( $att );
+		$items .= sprintf( '<li><img src="%s" alt="%s" loading="lazy" height="44"></li>', esc_url( $src ), esc_attr( $alt ) );
+	}
+}
+$files = $items ? [] : ( glob( get_theme_file_path( 'assets/logos/*.{svg,png,webp,jpg,jpeg}' ), GLOB_BRACE ) ?: [] );
+sort( $files );
 foreach ( $files as $f ) {
 	$name = basename( $f );
 	$alt  = trim( preg_replace( '/^\d+[-_]?|[-_]+/', ' ', pathinfo( $name, PATHINFO_FILENAME ) ) );
 	$items .= sprintf( '<li><img src="%s" alt="%s" loading="lazy" height="44"></li>', esc_url( get_theme_file_uri( 'assets/logos/' . $name ) ), esc_attr( $alt ) );
+}
+if ( ! $items ) {
+	return;
 }
 ?>
 <!-- wp:html -->
