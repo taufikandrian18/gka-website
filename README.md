@@ -108,6 +108,13 @@ sudo docker compose run --rm -T cli wp eval-file /opt/gka-bin/apply-photos.php
 
 `.env` (database passwords) and the database volume are never overwritten.
 
+## Upload size limit
+256 MB per file, set in `docker/php-uploads.ini` (mounted into the WordPress container). Change the numbers there,
+push to `main`, and the deploy recreates the container with the new limit. Check it with:
+```bash
+cd /opt/gka && sudo docker compose exec wordpress php -r 'echo ini_get("upload_max_filesize"), " / ", ini_get("post_max_size"), PHP_EOL;'
+```
+
 ## Useful
 - Logs: `sudo docker compose -f /opt/gka/docker-compose.yml logs --tail 50 wordpress`
 - WP-CLI: `cd /opt/gka && sudo docker compose run --rm cli wp plugin list`
