@@ -82,6 +82,15 @@ sudo unzip -o ~/gka-deploy.zip -d /opt/gka && cd /opt/gka && sudo docker compose
 cd /opt/gka && sudo docker compose run --rm -T cli wp rewrite flush --hard
 ```
 
+## Content is seeded once
+`bin/seed.php` fills the demo content on the first `setup.sh` run only; after that, everything edited in wp-admin is
+left alone (force a re-seed with `wp eval-file /opt/gka-bin/seed.php force`). Older versions re-seeded on every run and
+duplicated the 13 gallery items each time. Remove those copies (preview first, then `apply`):
+```bash
+cd /opt/gka && sudo docker compose run --rm -T cli wp eval-file /opt/gka-bin/dedupe-galeri.php
+cd /opt/gka && sudo docker compose run --rm -T cli wp eval-file /opt/gka-bin/dedupe-galeri.php apply
+```
+
 ## Pull real photos from pt-gka.com (re-runnable)
 ```bash
 cd /opt/gka && sudo docker compose run --rm -T cli wp eval-file /opt/gka-bin/fetch-assets.php
