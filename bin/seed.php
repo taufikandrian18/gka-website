@@ -9,6 +9,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 require_once ABSPATH . 'wp-admin/includes/image.php';
 
+/*
+ * Seed once. After the first run the content belongs to the people editing it in wp-admin:
+ * re-running used to reset the site title, job details and ESG categories, re-create deleted
+ * examples, and duplicate every gallery item that fetch-assets.php had renamed.
+ * Sites seeded before this flag existed are recognised by their content.
+ * Force a re-seed with:  wp eval-file bin/seed.php force
+ */
+$gka_force = in_array( 'force', $args ?? [], true );
+if ( ! $gka_force && ( get_option( 'gka_seeded' ) || get_posts( [ 'post_type' => 'gka_bisnis', 'post_status' => 'any', 'numberposts' => 1, 'fields' => 'ids' ] ) ) ) {
+	update_option( 'gka_seeded', get_option( 'gka_seeded' ) ?: gmdate( 'c' ), false );
+	echo "already seeded, content left as edited in wp-admin (force: wp eval-file bin/seed.php force)\n";
+	return;
+}
+
 if ( ! defined( 'GKA_SEED_IMG' ) ) {
 	define( 'GKA_SEED_IMG', get_theme_root() . '/gka/assets/images/' );
 }
@@ -164,5 +178,6 @@ if ( post_type_exists( 'wpcf7_contact_form' ) && ! get_page_by_path( 'formulir-k
 	update_post_meta( $form_id, '_messages', [ 'mail_sent_ok' => 'Pesan terkirim. Tim kami akan menghubungi Anda.', 'mail_sent_ng' => 'Pesan gagal terkirim. Hubungi kami lewat WhatsApp.', 'validation_error' => 'Periksa kembali isian yang ditandai.', 'invalid_required' => 'Wajib diisi.' ] );
 }
 
+update_option( 'gka_seeded', gmdate( 'c' ), false );
 flush_rewrite_rules();
 echo "seeded\n";
