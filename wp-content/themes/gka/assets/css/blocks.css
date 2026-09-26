@@ -400,7 +400,8 @@ html.lenis,html.lenis body{height:auto}
 .gka-dark .gka-eyebrow,.gka-dark .gka-head-side p{color:var(--sage)}
 .gka-dark em.is-accent{color:var(--accent)}
 .gka-dark .gka-more a{color:var(--accent)}
-.gka-dark a:not(.wp-block-button__link){color:inherit}
+/* :where() keeps this at (0,1,1) so .gka-dark .gka-more a (accent links) still wins */
+.gka-dark a:where(:not(.wp-block-button__link)){color:inherit}
 .gka-grain{position:absolute;inset:0;pointer-events:none;opacity:.16;mix-blend-mode:overlay;background:var(--gka-noise)}
 .gka-topo{position:relative;isolation:isolate}
 .gka-topo::before,.gka-phead::before,.gka-footer::before,.gka-intro-sec::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:currentColor;-webkit-mask:var(--gka-topo) center/cover no-repeat;mask:var(--gka-topo) center/cover no-repeat}

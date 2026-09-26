@@ -20,7 +20,13 @@ function gka_asset_ver( string $rel ): string {
 add_action( 'wp_enqueue_scripts', function (): void {
 	wp_enqueue_style( 'gka-blocks', get_theme_file_uri( 'assets/css/blocks.css' ), [], gka_asset_ver( 'assets/css/blocks.css' ) );
 	wp_enqueue_script( 'gka-view', get_theme_file_uri( 'assets/js/view.js' ), [], gka_asset_ver( 'assets/js/view.js' ), [ 'strategy' => 'defer', 'in_footer' => true ] );
-	wp_add_inline_script( 'gka-view', 'window.GKA=' . wp_json_encode( [ 'home' => gka_base_path() . '/', 'theme' => trailingslashit( get_theme_file_uri() ) ] ) . ';', 'before' );
+	wp_add_inline_script( 'gka-view', 'window.GKA=' . wp_json_encode( [
+		'home'  => gka_base_path() . '/',
+		'theme' => trailingslashit( get_theme_file_uri() ),
+		'wa'    => gka_c_wa(),
+		'tel'   => 'tel:' . gka_c_tel( gka_c( 'phone' ) ),
+		'phone' => gka_c( 'phone' ),
+	] ) . ';', 'before' );
 	// Motion layer: GSAP 3 + ScrollTrigger (standard no-charge licence) and Lenis smooth scroll, vendored.
 	$defer = [ 'strategy' => 'defer', 'in_footer' => true ];
 	wp_enqueue_script( 'gka-gsap', get_theme_file_uri( 'assets/vendor/gsap.min.js' ), [], '3.15.0', $defer );
@@ -58,6 +64,19 @@ add_action( 'init', function (): void {
 	register_block_style( 'core/list', [ 'name' => 'checks', 'label' => __( 'Centang', 'gka' ) ] );
 	register_block_style( 'core/button', [ 'name' => 'arrow', 'label' => __( 'Dengan panah', 'gka' ) ] );
 } );
+
+/*
+ * Site copy lives in the GKA Core plugin (wp-admin → GKA Konten). If the plugin is ever inactive,
+ * these stand-ins keep pages rendering (empty text, theme photos) instead of fatal errors.
+ */
+if ( ! function_exists( 'gka_c' ) ) {
+	function gka_c( string $key ): string { return ''; }
+	function gka_ct( string $key, bool $links = true ): string { return ''; }
+	function gka_c_img( string $key, string $fallback = '', string $size = 'full' ): string { return $fallback; }
+	function gka_c_imgs( string $key ): array { return []; }
+	function gka_c_tel( string $display ): string { return ''; }
+	function gka_c_wa(): string { return ''; }
+}
 
 /**
  * Path WordPress is served under: '' at a domain root, '/gka' at website.taufikandrian.my.id/gka/.
@@ -146,16 +165,12 @@ add_shortcode( 'gka_breadcrumbs', function (): string {
 /** [gka_page_intro] – the page excerpt as lede, when a page has one. */
 add_shortcode( 'gka_lede', function (): string {
 	if ( is_post_type_archive() ) {
-		$map = [
-			'gka_bisnis'    => 'Dari budidaya broiler di kandang close house hingga kemitraan dengan peternak di sekitar Serang.',
-			'gka_produk'    => 'Setiap produk punya halaman dengan spesifikasi, proses pembelian, dan dokumen pendukung.',
-			'gka_publikasi' => 'Dokumentasi kegiatan internal dan eksternal perusahaan.',
-			'gka_galeri'    => 'Kumpulan dokumentasi fasilitas kandang, proses produksi, dan kegiatan operasional.',
-			'gka_lowongan'  => 'Lowongan aktif di Serang, Banten. Tidak menemukan posisi yang cocok? Kirim CV ke ita@pt-gka.com.',
-		];
-		$pt = get_query_var( 'post_type' );
-		$pt = is_array( $pt ) ? reset( $pt ) : $pt;
-		return isset( $map[ $pt ] ) ? '<p class="gka-lede">' . esc_html( $map[ $pt ] ) . '</p>' : '';
+		// Editable in wp-admin → GKA Konten → Intro halaman daftar.
+		$pt  = get_query_var( 'post_type' );
+		$pt  = is_array( $pt ) ? reset( $pt ) : $pt;
+		$key = 'lede_' . preg_replace( '/^gka_/', '', (string) $pt );
+		$html = gka_ct( $key );
+		return '' !== $html ? '<p class="gka-lede">' . $html . '</p>' : '';
 	}
 	if ( is_tax() ) {
 		$d = term_description();
@@ -199,7 +214,7 @@ add_shortcode( 'gka_contact_form', function (): string {
 	if ( shortcode_exists( 'contact-form-7' ) && $form ) {
 		return do_shortcode( sprintf( '[contact-form-7 id="%d" html_class="gka-cf7"]', $form->ID ) );
 	}
-	return '<p>Formulir sedang disiapkan. Hubungi kami langsung lewat <a href="https://wa.me/6287771491004">WhatsApp</a> atau <a href="mailto:yanti@pt-gka.com">email</a>.</p>';
+	return sprintf( '<p>Formulir sedang disiapkan. Hubungi kami langsung lewat <a href="%s">WhatsApp</a> atau <a href="mailto:%s">email</a>.</p>', esc_url( gka_c_wa() ), esc_attr( gka_c( 'email' ) ) );
 } );
 
 /** Real photos fetched by bin/fetch-assets.php live in uploads/gka-photos; fall back to theme placeholders. */

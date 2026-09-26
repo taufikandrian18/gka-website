@@ -11,7 +11,7 @@
 <div class="wp-block-columns gka-split">
 <!-- wp:column {"width":"55%"} --><div class="wp-block-column" style="flex-basis:55%">
 <!-- wp:group {"className":"gka-mini-head","layout":{"type":"flex","justifyContent":"space-between","verticalAlignment":"bottom","flexWrap":"wrap"}} -->
-<div class="wp-block-group gka-mini-head"><!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group"><!-- wp:paragraph {"className":"gka-eyebrow"} --><p class="gka-eyebrow">Galeri</p><!-- /wp:paragraph --><!-- wp:heading {"fontSize":"2xl"} --><h2 class="wp-block-heading has-2-xl-font-size">Perjalanan kami <em class="is-accent">dalam gambar</em></h2><!-- /wp:heading --></div><!-- /wp:group --><!-- wp:paragraph {"className":"gka-more"} --><p class="gka-more"><a href="/galeri/">Semua foto</a></p><!-- /wp:paragraph --></div>
+<div class="wp-block-group gka-mini-head"><!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group"><!-- wp:paragraph {"className":"gka-eyebrow"} --><p class="gka-eyebrow"><?php echo gka_ct( 'galeri_eyebrow' ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in gka_ct ?></p><!-- /wp:paragraph --><!-- wp:heading {"fontSize":"2xl"} --><h2 class="wp-block-heading has-2-xl-font-size"><?php echo gka_ct( 'galeri_title' ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in gka_ct ?></h2><!-- /wp:heading --></div><!-- /wp:group --><!-- wp:paragraph {"className":"gka-more"} --><p class="gka-more"><a href="/galeri/"><?php echo esc_html( gka_c( 'galeri_link' ) ); ?></a></p><!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 <!-- wp:query {"queryId":13,"query":{"postType":"gka_galeri","perPage":5,"order":"asc","orderBy":"menu_order","inherit":false},"className":"gka-gal"} -->
 <div class="wp-block-query gka-gal"><!-- wp:post-template -->
@@ -21,7 +21,7 @@
 </div><!-- /wp:column -->
 <!-- wp:column --><div class="wp-block-column">
 <!-- wp:group {"className":"gka-mini-head","layout":{"type":"flex","justifyContent":"space-between","verticalAlignment":"bottom","flexWrap":"wrap"}} -->
-<div class="wp-block-group gka-mini-head"><!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group"><!-- wp:paragraph {"className":"gka-eyebrow"} --><p class="gka-eyebrow">Publikasi</p><!-- /wp:paragraph --><!-- wp:heading {"fontSize":"2xl"} --><h2 class="wp-block-heading has-2-xl-font-size">Kabar terbaru</h2><!-- /wp:heading --></div><!-- /wp:group --><!-- wp:paragraph {"className":"gka-more"} --><p class="gka-more"><a href="/publikasi/">Semua publikasi</a></p><!-- /wp:paragraph --></div>
+<div class="wp-block-group gka-mini-head"><!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group"><!-- wp:paragraph {"className":"gka-eyebrow"} --><p class="gka-eyebrow"><?php echo gka_ct( 'publikasi_eyebrow' ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in gka_ct ?></p><!-- /wp:paragraph --><!-- wp:heading {"fontSize":"2xl"} --><h2 class="wp-block-heading has-2-xl-font-size"><?php echo gka_ct( 'publikasi_title' ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in gka_ct ?></h2><!-- /wp:heading --></div><!-- /wp:group --><!-- wp:paragraph {"className":"gka-more"} --><p class="gka-more"><a href="/publikasi/"><?php echo esc_html( gka_c( 'publikasi_link' ) ); ?></a></p><!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 <!-- wp:query {"queryId":14,"query":{"postType":"gka_publikasi","perPage":3,"order":"desc","orderBy":"date","inherit":false},"className":"gka-news"} -->
 <div class="wp-block-query gka-news"><!-- wp:post-template -->

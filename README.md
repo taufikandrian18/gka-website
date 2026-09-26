@@ -82,6 +82,15 @@ sudo unzip -o ~/gka-deploy.zip -d /opt/gka && cd /opt/gka && sudo docker compose
 cd /opt/gka && sudo docker compose run --rm -T cli wp rewrite flush --hard
 ```
 
+## Editing the site copy (wp-admin → GKA Konten)
+Homepage text, numbers, buttons, hero slides, process steps, ESG band, contact call-to-action, partner logos,
+contact details (footer, mobile menu, contact page) and the intros on the list pages are edited in
+**wp-admin → GKA Konten**. They are stored in the `gka_content` option, so deploys never overwrite them.
+An empty field shows the built-in text. In any text: `*kata*` = italic accent word; `{email}`, `{email_karir}`,
+`{telepon}`, `{whatsapp}` = the values from the Kontak tab. Bisnis, Produk, Publikasi, Galeri, Karir, ESG
+documents and Tim are edited in their own menus; About/ESG/Contact pages under Pages.
+Avoid editing templates in Appearance → Editor: a template saved there stops receiving design updates from Git.
+
 ## Content is seeded once
 `bin/seed.php` fills the demo content on the first `setup.sh` run only; after that, everything edited in wp-admin is
 left alone (force a re-seed with `wp eval-file /opt/gka-bin/seed.php force`). Older versions re-seeded on every run and
