@@ -51,6 +51,7 @@ services:
       - ./wp-content/plugins/gka-core:/var/www/html/wp-content/plugins/gka-core:ro
       - ./bin:/opt/gka-bin:ro
       - ./docker/apache-gka.conf:/etc/apache2/conf-enabled/gka-subdir.conf:ro
+      - ./docker/php-uploads.ini:/usr/local/etc/php/conf.d/gka-uploads.ini:ro
     mem_limit: 512m
     logging: *logging
     networks: [internal, proxy]
