@@ -138,6 +138,14 @@ function gka_content_schema(): array {
 		'lede_lowongan'  => $f( 'textarea', 'Karir', 'Lowongan aktif di Serang, Banten. Tidak menemukan posisi yang cocok? Kirim CV ke {email_karir}.' ),
 	];
 
+	$e404 = [
+		'e404_eyebrow' => $f( 'text', 'Label', 'Error 404 · Halaman tidak ditemukan' ),
+		'e404_title'   => $f( 'text', 'Judul', 'Sepertinya halaman ini *sudah dipanen.*', $acc ),
+		'e404_lede'    => $f( 'textarea', 'Paragraf', 'Alamat yang Anda buka tidak ada atau sudah dipindahkan, mungkin dari website lama. Coba salah satu tujuan di bawah, atau kembali ke beranda.' ),
+		'e404_home'    => $f( 'text', 'Tombol utama · teks', 'Kembali ke beranda' ),
+		'e404_contact' => $f( 'text', 'Tombol kedua · teks', 'Hubungi kami' ),
+	];
+
 	$schema = [
 		'hero'    => [ 'Pembuka', $hero ],
 		'about'   => [ 'Tentang & angka', $about ],
@@ -147,6 +155,7 @@ function gka_content_schema(): array {
 		'cta'     => [ 'Ajakan & logo', $cta ],
 		'kontak'  => [ 'Kontak', $kontak ],
 		'arsip'   => [ 'Intro halaman daftar', $arsip ],
+		'e404'    => [ 'Halaman 404', $e404 ],
 	];
 	return $schema;
 }

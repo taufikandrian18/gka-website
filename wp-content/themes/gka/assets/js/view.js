@@ -85,6 +85,26 @@
     matchMedia('(min-width: 1024px)').addEventListener('change', (m) => { if (m.matches && !drawer.hidden) close(); });
   }
 
+  // 404: show the address that was requested, and let the "4 🥚 4" lean toward the pointer.
+  const e404 = document.querySelector('.gka-404');
+  if (e404) {
+    const path = e404.querySelector('.gka-404-path');
+    const shown = decodeURIComponent(location.pathname + location.search).slice(0, 120);
+    if (path && shown.replace(/\/+$/, '') !== home.replace(/\/+$/, '')) {
+      path.querySelector('code').textContent = shown;
+      path.hidden = false;
+    }
+    const num = e404.querySelector('.gka-404-num');
+    if (num && matchMedia('(hover: hover) and (prefers-reduced-motion: no-preference)').matches) {
+      e404.addEventListener('pointermove', (e) => {
+        const r = e404.getBoundingClientRect();
+        num.style.setProperty('--mx', ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
+        num.style.setProperty('--my', ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
+      });
+      e404.addEventListener('pointerleave', () => { num.style.setProperty('--mx', 0); num.style.setProperty('--my', 0); });
+    }
+  }
+
   // Scroll cue in the hero: jump to the first section below it.
   document.querySelectorAll('.gka-scroll-cue').forEach((b) => b.addEventListener('click', () => {
     const next = document.querySelector('.gka-hero')?.nextElementSibling || document.querySelector('main');
